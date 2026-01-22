@@ -1,0 +1,1 @@
+@tailwind base;@tailwind components;@tailwind utilities;@layer base{body{@apply bg-background text-white antialiased;}}@layer components{.glass-panel{@apply bg-glass backdrop-blur-md border border-white/10 rounded-xl shadow-xl;}.btn-primary{@apply bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all shadow-lg shadow-blue-500/30 font-medium;}}
