@@ -1,253 +1,129 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { db } from '../firebase';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import ProblemLog from '../components/ProblemLog';
-import MentorView from '../components/MentorView';
 
 export default function Dashboard() {
-    const { currentUser, logout } = useAuth();
-    const [userData, setUserData] = useState(null);
-    const [problems, setProblems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [refreshKey, setRefreshKey] = useState(0);
+    const [selectedTopic, setSelectedTopic] = useState(null);
 
-    useEffect(() => {
-        if (!currentUser) return;
-
-        const userRef = doc(db, 'users', currentUser.uid);
-        const unsubscribe = onSnapshot(userRef, (docSnapshot) => {
-            if (docSnapshot.exists()) {
-                const data = docSnapshot.data();
-                setUserData(data);
-                setProblems(data.problems || []);
-            }
-            setLoading(false);
-        });
-
-        return unsubscribe;
-    }, [currentUser]);
-
-    const stats = userData?.stats || { totalProblems: 0, topicStats: {}, difficultyStats: {} };
-    const topicStats = stats.topicStats || {};
-    const difficultyStats = stats.difficultyStats || {};
-
-    const weakestTopics = Object.entries(topicStats)
-        .sort((a, b) => a[1] - b[1])
-        .slice(0, 3);
-
-    const strongestTopics = Object.entries(topicStats)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3);
-
-    const handleRefresh = () => {
-        setRefreshKey(prev => prev + 1);
+    const stats = {
+        totalSolved: 156,
+        streakDays: 21,
+        successRate: 87,
+        ranking: 542
     };
 
+    const recentProblems = [
+        { id: 1, name: 'Two Sum', difficulty: 'Easy', status: 'solved', time: '2 days ago' },
+        { id: 2, name: 'Longest Substring', difficulty: 'Medium', status: 'solved', time: '4 days ago' },
+        { id: 3, name: 'Word Ladder II', difficulty: 'Hard', status: 'attempted', time: '1 week ago' },
+        { id: 4, name: 'Median of Two Arrays', difficulty: 'Hard', status: 'solving', time: 'Today' }
+    ];
+
+    const topicProgress = [
+        { name: 'Arrays', solved: 45, total: 50, progress: 90 },
+        { name: 'Strings', solved: 38, total: 40, progress: 95 },
+        { name: 'Linked Lists', solved: 28, total: 35, progress: 80 },
+        { name: 'Trees', solved: 35, total: 45, progress: 78 },
+        { name: 'Graphs', solved: 12, total: 30, progress: 40 },
+        { name: 'DP', solved: 18, total: 50, progress: 36 }
+    ];
+
+    const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
+    const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-            {/* Animated background */}
-            <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-            </div>
-
-            <div className="relative z-10 p-6 max-w-7xl mx-auto pb-20">
-                {/* Header */}
-                <motion.header
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex justify-between items-center mb-12"
-                >
-                    <div>
-                        <h1 className="text-4xl font-bold gradient-text mb-2">Learning Dashboard</h1>
-                        <p className="text-gray-400 text-sm">
-                            Welcome back, <span className="text-cyan-400 font-semibold">{currentUser?.displayName || 'User'}</span>
-                        </p>
-                    </div>
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={logout}
-                        className="px-6 py-2 btn-secondary text-sm"
-                    >
-                        Sign Out
-                    </motion.button>
-                </motion.header>
-
-                {/* Stats Grid */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
-                >
-                    {/* Total Problems */}
-                    <div className="card-premium p-6 border-l-4 border-blue-500/60">
-                        <div className="flex items-center justify-between mb-4">
-                            <p className="text-gray-400 text-sm font-semibold">PROBLEMS SOLVED</p>
-                            <span className="text-2xl">📊</span>
-                        </div>
-                        <p className="text-4xl font-bold text-cyan-400">{stats.totalProblems}</p>
-                        <p className="text-xs text-gray-500 mt-2">Total DSA problems</p>
-                    </div>
-
-                    {/* Easy Count */}
-                    <div className="card-premium p-6 border-l-4 border-green-500/60">
-                        <div className="flex items-center justify-between mb-4">
-                            <p className="text-gray-400 text-sm font-semibold">EASY</p>
-                            <span className="text-2xl">✅</span>
-                        </div>
-                        <p className="text-4xl font-bold text-green-400">{difficultyStats.Easy || 0}</p>
-                        <p className="text-xs text-gray-500 mt-2">Beginner level</p>
-                    </div>
-
-                    {/* Medium Count */}
-                    <div className="card-premium p-6 border-l-4 border-yellow-500/60">
-                        <div className="flex items-center justify-between mb-4">
-                            <p className="text-gray-400 text-sm font-semibold">MEDIUM</p>
-                            <span className="text-2xl">⚡</span>
-                        </div>
-                        <p className="text-4xl font-bold text-yellow-400">{difficultyStats.Medium || 0}</p>
-                        <p className="text-xs text-gray-500 mt-2">Intermediate level</p>
-                    </div>
-
-                    {/* Hard Count */}
-                    <div className="card-premium p-6 border-l-4 border-red-500/60">
-                        <div className="flex items-center justify-between mb-4">
-                            <p className="text-gray-400 text-sm font-semibold">HARD</p>
-                            <span className="text-2xl">🔥</span>
-                        </div>
-                        <p className="text-4xl font-bold text-red-400">{difficultyStats.Hard || 0}</p>
-                        <p className="text-xs text-gray-500 mt-2">Advanced level</p>
-                    </div>
+        <div className="pt-20 pb-16 px-6 min-h-screen">
+            <div className="max-w-7xl mx-auto">
+                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
+                    <h1 className="text-5xl font-bold mb-3">Your Dashboard</h1>
+                    <p className="text-xl text-gray-400">Track your progress and master DSA</p>
                 </motion.div>
 
-                {/* Main Content Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Left Column - Problem Logger */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="lg:col-span-2"
-                    >
-                        <ProblemLog userId={currentUser?.uid} onProblemAdded={handleRefresh} />
-                    </motion.div>
-
-                    {/* Right Column - Focus Areas & Insights */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="space-y-6"
-                    >
-                        {/* Focus Areas (Weak Topics) */}
-                        <div className="card-premium p-6 border border-slate-700/60">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                <span>🎯</span>
-                                Focus Areas
-                            </h3>
-                            {weakestTopics.length > 0 ? (
-                                <div className="space-y-3">
-                                    {weakestTopics.map(([topic, count], idx) => (
-                                        <motion.div
-                                            key={topic}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.3 + idx * 0.1 }}
-                                            className="flex items-center justify-between bg-orange-500/10 p-3 rounded-lg border border-orange-500/30 hover:border-orange-500/60 transition-colors"
-                                        >
-                                            <span className="text-gray-300 font-medium">{topic}</span>
-                                            <span className="text-xs font-semibold text-orange-400 bg-orange-500/20 px-2 py-1 rounded">{count} problems</span>
-                                        </motion.div>
-                                    ))}
+                <motion.div variants={container} initial="hidden" animate="show" className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    {[
+                        { label: 'Problems Solved', value: stats.totalSolved, icon: '✅', color: 'from-green-600 to-emerald-600' },
+                        { label: 'Current Streak', value: `${stats.streakDays} days`, icon: '🔥', color: 'from-orange-600 to-red-600' },
+                        { label: 'Success Rate', value: `${stats.successRate}%`, icon: '📈', color: 'from-blue-600 to-violet-600' },
+                        { label: 'Global Rank', value: `#${stats.ranking}`, icon: '🏆', color: 'from-yellow-600 to-amber-600' }
+                    ].map((stat, idx) => (
+                        <motion.div key={idx} variants={item} className="glass-panel p-6 hover:shadow-lg hover:shadow-blue-600/20 transition-all">
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <p className="text-gray-400 text-sm mb-2">{stat.label}</p>
+                                    <h3 className={`text-4xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.value}</h3>
                                 </div>
-                            ) : (
-                                <p className="text-gray-400 text-sm">Start solving problems to track weak areas</p>
-                            )}
-                        </div>
-
-                        {/* Strengths */}
-                        <div className="card-premium p-6 border border-slate-700/60">
-                            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                <span>⭐</span>
-                                Your Strengths
-                            </h3>
-                            {strongestTopics.length > 0 ? (
-                                <div className="space-y-3">
-                                    {strongestTopics.map(([topic, count], idx) => (
-                                        <motion.div
-                                            key={topic}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.3 + idx * 0.1 }}
-                                            className="flex items-center justify-between bg-emerald-500/10 p-3 rounded-lg border border-emerald-500/30 hover:border-emerald-500/60 transition-colors"
-                                        >
-                                            <span className="text-gray-300 font-medium">{topic}</span>
-                                            <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/20 px-2 py-1 rounded">{count} problems</span>
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="text-gray-400 text-sm">Topics will appear here as you solve problems</p>
-                            )}
-                        </div>
-                    </motion.div>
-                </div>
-
-                {/* AI Mentor Insights */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="mt-8 card-premium p-8 border border-slate-700/60"
-                >
-                    <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                        <span>🤖</span>
-                        AI Mentor Insights
-                    </h3>
-                    <MentorView problems={problems} userId={currentUser?.uid} />
+                                <span className="text-4xl">{stat.icon}</span>
+                            </div>
+                        </motion.div>
+                    ))}
                 </motion.div>
 
-                {/* Recent Problems List */}
-                {problems.length > 0 && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
-                        className="mt-8"
-                    >
-                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                            <span>📋</span>
-                            Recent Problems
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {problems.slice(0, 6).map((problem) => (
-                                <motion.div
-                                    key={problem.id}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="card-premium p-4 border border-slate-700/60 hover:border-cyan-500/40 transition-all hover:shadow-lg hover:shadow-cyan-500/20"
-                                >
-                                    <div className="flex items-start justify-between mb-3">
-                                        <h4 className="text-sm font-bold text-white flex-1 line-clamp-2">{problem.topic}</h4>
-                                        <span className={`text-xs font-semibold px-2 py-1 rounded ml-2 whitespace-nowrap ${
-                                            problem.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                                            problem.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
-                                            'bg-red-500/20 text-red-400 border border-red-500/30'
-                                        }`}>
-                                            {problem.difficulty}
-                                        </span>
+                <div className="grid lg:grid-cols-3 gap-6">
+                    <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-2 glass-panel p-6">
+                        <h2 className="text-2xl font-bold mb-6">Recent Activity</h2>
+                        <div className="space-y-3">
+                            {recentProblems.map((problem, idx) => (
+                                <motion.div key={idx} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }} className="flex items-center justify-between p-4 bg-slate-700/20 rounded-lg hover:bg-slate-700/40 transition-all cursor-pointer group">
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-2xl">{problem.status === 'solved' ? '✅' : problem.status === 'attempted' ? '⏳' : '🔄'}</span>
+                                        <div>
+                                            <p className="font-semibold group-hover:text-blue-400 transition-colors">{problem.name}</p>
+                                            <p className="text-sm text-gray-500">{problem.time}</p>
+                                        </div>
                                     </div>
-                                    <p className="text-xs text-gray-400 mb-3 line-clamp-2">{problem.concept}</p>
-                                    <p className="text-xs text-gray-500">{problem.solvedDate}</p>
+                                    <span className={`px-3 py-1 rounded-lg text-sm font-semibold ${problem.difficulty === 'Easy' ? 'bg-green-600/20 text-green-300' : problem.difficulty === 'Medium' ? 'bg-yellow-600/20 text-yellow-300' : 'bg-red-600/20 text-red-300'}`}>{problem.difficulty}</span>
                                 </motion.div>
                             ))}
                         </div>
                     </motion.div>
-                )}
+
+                    <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="glass-panel p-6">
+                        <h2 className="text-2xl font-bold mb-6">Quick Tips</h2>
+                        <div className="space-y-4">
+                            {[
+                                { icon: '💡', title: 'Solve Daily', desc: 'Maintain your streak!' },
+                                { icon: '🎯', title: 'Focus Weak Areas', desc: 'Work on Graphs & DP' },
+                                { icon: '🤖', title: 'Ask AI Mentor', desc: 'Get real-time help' },
+                                { icon: '🎤', title: 'Mock Interview', desc: 'Practice interviewing' }
+                            ].map((tip, idx) => (
+                                <motion.div key={idx} whileHover={{ x: 5 }} className="flex gap-3 p-3 bg-slate-700/20 rounded-lg cursor-pointer">
+                                    <span className="text-2xl">{tip.icon}</span>
+                                    <div>
+                                        <p className="font-semibold text-sm">{tip.title}</p>
+                                        <p className="text-xs text-gray-500">{tip.desc}</p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </motion.div>
+                </div>
+
+                <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-12 glass-panel p-8">
+                    <h2 className="text-2xl font-bold mb-8">Topic Progress</h2>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {topicProgress.map((topic, idx) => (
+                            <motion.div key={idx} whileHover={{ scale: 1.02 }} onHoverStart={() => setSelectedTopic(topic.name)} onHoverEnd={() => setSelectedTopic(null)} className="p-4 bg-slate-700/20 rounded-lg border border-slate-700/30 hover:border-blue-500/30 transition-all cursor-pointer">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="font-bold text-lg">{topic.name}</h3>
+                                    <span className="text-sm font-semibold text-blue-400">{topic.solved}/{topic.total}</span>
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="bg-slate-900/50 h-2 rounded-full overflow-hidden">
+                                        <motion.div initial={{ width: 0 }} animate={{ width: `${topic.progress}%` }} transition={{ duration: 0.8, delay: idx * 0.1 }} className="h-full bg-gradient-to-r from-blue-600 to-violet-600" />
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className={`text-sm font-semibold ${topic.progress >= 80 ? 'text-green-400' : topic.progress >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>{topic.progress}%</span>
+                                        <span className="text-xs text-gray-500">{topic.total - topic.solved} remaining</span>
+                                    </div>
+                                </div>
+                                {selectedTopic === topic.name && (
+                                    <motion.button initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="w-full mt-4 px-3 py-2 bg-blue-600/30 text-blue-300 rounded-lg font-semibold hover:bg-blue-600/50 transition-all text-sm">
+                                        Continue Learning
+                                    </motion.button>
+                                )}
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
             </div>
         </div>
     );

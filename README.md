@@ -1,53 +1,219 @@
-# 📚 DSA Mentor - Documentation Index
+# DSA Master - AI-Powered Learning Platform
 
-## Welcome! 👋
+A modern, feature-rich DSA (Data Structures & Algorithms) learning platform with AI-powered mentorship, real-time problem analysis, and professional UI/UX design.
 
-This is your complete guide to the DSA Mentor project. Start here!
+## 🚀 Features
+
+### 🤖 AI Chatbot
+- **Real-time AI Mentor**: Integrated Gemini AI chatbot for instant help
+- **Smart Problem Analysis**: Detailed explanations without giving away solutions
+- **Context-Aware Responses**: Understands your learning journey
+- **Always Available**: 24/7 AI assistance for DSA doubts
+
+### 📊 Dashboard
+- **Real-time Stats**: Track problems solved by difficulty level
+- **Progress Tracking**: Visual breakdown of Easy, Medium, Hard problems
+- **Topic Analysis**: Identify strengths and areas for improvement
+- **Recent Problems**: Quick access to your problem history
+
+### 🔍 Problem Logger
+- **One-Click Analysis**: Paste a problem link, get AI analysis
+- **Platform Detection**: Works with LeetCode, GeeksforGeeks, Codeforces, HackerRank
+- **AI Insights**: Topic, difficulty, and key concepts identification
+- **Real-time Database**: All problems synced with Firebase Firestore
+
+### 🎓 AI Mentor Insights
+- **Personalized Recommendations**: Get actionable next steps
+- **Difficulty Breakdown**: Visual progress charts
+- **Topic Statistics**: Master the topics you're weak at
+- **Smart Suggestions**: Data-driven learning paths
+
+### 🔐 Authentication
+- **Google OAuth**: Secure sign-in with Google
+- **Demo Mode**: Try the platform without signing up
+- **Persistent Sessions**: Your data is always saved
+
+## 🎨 Design Highlights
+
+- **Enterprise Dark Theme**: Professional slate-900 base with cyan/blue accents
+- **Smooth Animations**: Powered by Framer Motion
+- **Responsive Design**: Perfect on desktop, tablet, and mobile
+- **Glass Morphism**: Modern backdrop blur effects
+- **Gradient Accents**: Beautiful gradient buttons and cards
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 18 + Vite
+- **Styling**: Tailwind CSS + Custom CSS
+- **Animation**: Framer Motion
+- **Authentication**: Firebase Auth (Google OAuth)
+- **Database**: Firestore (Real-time)
+- **AI**: Google Gemini API
+- **Deployment**: GitHub Pages
+
+## 📦 Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/karanray06/Pixelers.git
+   cd Pixelers
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   Create `.env` file in root:
+   ```env
+   VITE_FIREBASE_API_KEY=your_firebase_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+   VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_sender_id
+   VITE_FIREBASE_APP_ID=your_firebase_app_id
+   VITE_GEMINI_API_KEY=your_gemini_api_key
+   ```
+
+4. **Run development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+## 🌐 Live Demo
+
+Visit the live website: [DSA Master](https://karanray06.github.io/Pixelers/)
+
+Or use **Demo Mode** to try the platform without signing up!
+
+## 📁 Project Structure
+
+```
+src/
+├── components/
+│   ├── Login.jsx              # Authentication page
+│   ├── AIChat.jsx             # AI chatbot component
+│   ├── ProblemLog.jsx         # Problem input & analysis
+│   ├── MentorView.jsx         # AI insights display
+│   └── ProtectedRoute.jsx     # Route protection
+├── pages/
+│   └── Dashboard.jsx          # Main dashboard
+├── contexts/
+│   └── AuthContext.jsx        # Authentication state
+├── services/
+│   └── gemini.js              # Gemini AI integration
+├── App.jsx                    # Main app component
+├── main.jsx                   # React entry point
+└── index.css                  # Global styles
+```
+
+## 🎯 How to Use
+
+1. **Sign In**
+   - Use Google Sign-in or Demo Mode
+   - No credit card required
+
+2. **Log a Problem**
+   - Paste a problem link from LeetCode, GeeksforGeeks, etc.
+   - Click "Analyze with AI"
+   - Get instant AI analysis with difficulty and concepts
+
+3. **Track Progress**
+   - View your dashboard for stats
+   - See your strengths and focus areas
+   - Track problems solved by difficulty
+
+4. **Get AI Help**
+   - Click the 💬 button (bottom-right)
+   - Ask anything about DSA
+   - Get guidance, hints, and explanations
+
+5. **Review Insights**
+   - Check AI mentor recommendations
+   - Follow personalized learning paths
+   - Master weak areas systematically
+
+## 🔗 Supported Platforms
+
+- ✅ LeetCode
+- ✅ GeeksforGeeks
+- ✅ Codeforces
+- ✅ HackerRank
+- ✅ CodeChef
+- ✅ Any problem URL (will analyze based on content)
+
+## 💡 AI Features
+
+### Smart Problem Analysis
+The AI analyzes:
+- Problem topic (Arrays, Linked Lists, Trees, etc.)
+- Difficulty level (Easy, Medium, Hard)
+- Key concepts needed
+- Approach recommendations
+- Time/Space complexity insights
+
+### Personalized Mentorship
+The AI provides:
+- Learning suggestions based on your progress
+- Difficulty recommendations
+- Topic-specific guidance
+- Interview preparation tips
+- Motivation and encouragement
+
+## 🚀 Performance
+
+- ⚡ Lightning-fast builds with Vite
+- 📦 Optimized bundle size (~200KB gzipped)
+- 🎯 Smooth 60fps animations
+- 🔄 Real-time Firebase updates
+- 🌐 Mobile-optimized responsive design
+
+## 🔒 Security
+
+- 🔐 Google OAuth for secure authentication
+- 🛡️ Firebase security rules
+- 🔑 No passwords stored locally
+- 🎯 Private user data in Firestore
+- ✨ No ads or tracking
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to:
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- **Gemini AI** for intelligent problem analysis
+- **Firebase** for real-time backend
+- **Framer Motion** for smooth animations
+- **Tailwind CSS** for utility-first styling
+- **React** and **Vite** for the amazing DX
+
+## 📞 Support
+
+- 📧 Email: support@dsamentor.com
+- 🐛 Found a bug? Open an issue
+- 💡 Have a feature request? Let me know!
 
 ---
 
-## 🚀 Start Here (Pick Your Path)
+**Made with ❤️ for DSA learners worldwide**
 
-### **I Want to Start Coding Right Now** ⚡
-→ Read: [QUICK_START.md](QUICK_START.md)
-- 5-minute setup guide
-- Immediate testing
-- Ready-to-use problem URLs
-
-### **I Want Complete Testing Instructions** 🧪
-→ Read: [TESTING_GUIDE.md](TESTING_GUIDE.md)
-- Comprehensive workflow
-- Feature verification
-- Troubleshooting guide
-- Test data provided
-
-### **I Want to Understand What Was Built** 🏗️
-→ Read: [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)
-- What was implemented
-- Project structure
-- Feature breakdown
-- How to use each part
-
-### **I Need a Quick Reference** 📋
-→ Read: [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
-- Commands at a glance
-- Test URLs
-- File overview
-- Common issues
-
-### **I Want Technical Details** 💻
-→ Read: [FEATURES.md](FEATURES.md)
-- Feature documentation
-- Technical architecture
-- API details
-- Database schema
-
-### **I Want to See the Big Picture** 🌐
-→ Read: [COMPLETION_REPORT.md](COMPLETION_REPORT.md)
-- Implementation status
-- What's completed
-- Deployment readiness
-- Future ideas
+Start your DSA journey today and master data structures with AI! 🚀
 
 ---
 
