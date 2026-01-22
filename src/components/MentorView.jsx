@@ -76,7 +76,7 @@ export default function MentorView({ problems = [], userId }) {
     if (!insights && problems.length > 0) {
         return (
             <div className="flex items-center justify-center py-8">
-                <div className="animate-pulse text-slate-400 flex items-center gap-2">
+                <div className="animate-pulse text-gray-400 flex items-center gap-2">
                     <span className="text-2xl animate-spin">⚙️</span>
                     Analyzing your progress...
                 </div>
@@ -88,7 +88,7 @@ export default function MentorView({ problems = [], userId }) {
         return (
             <div className="text-center py-8">
                 <div className="text-4xl mb-4">📚</div>
-                <p className="text-slate-400">No problems logged yet. Start by adding your first problem!</p>
+                <p className="text-gray-500">No problems logged yet. Start by adding your first problem!</p>
             </div>
         );
     }
@@ -103,7 +103,7 @@ export default function MentorView({ problems = [], userId }) {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.1 }}
-                        className="bg-slate-900/40 border border-blue-500/20 rounded-lg p-4 text-slate-300 text-sm font-mono"
+                        className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-gray-700 text-sm font-medium"
                     >
                         {rec}
                     </motion.div>
@@ -115,35 +115,35 @@ export default function MentorView({ problems = [], userId }) {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-slate-900/40 border border-slate-700 rounded-lg p-4"
+                    className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4"
                 >
-                    <p className="text-xs font-mono text-slate-500 mb-2">TOTAL PROBLEMS</p>
-                    <p className="text-2xl font-bold text-cyan-400">{insights.totalProblems}</p>
+                    <p className="text-xs font-semibold text-blue-600 mb-2">TOTAL PROBLEMS</p>
+                    <p className="text-2xl font-bold text-blue-700">{insights.totalProblems}</p>
                 </motion.div>
 
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-slate-900/40 border border-slate-700 rounded-lg p-4"
+                    className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4"
                 >
-                    <p className="text-xs font-mono text-slate-500 mb-2">TOPICS COVERED</p>
-                    <p className="text-2xl font-bold text-blue-400">{Object.keys(insights.topicCount).length}</p>
+                    <p className="text-xs font-semibold text-purple-600 mb-2">TOPICS COVERED</p>
+                    <p className="text-2xl font-bold text-purple-700">{Object.keys(insights.topicCount).length}</p>
                 </motion.div>
             </div>
 
             {/* Detailed Breakdown */}
-            <div className="bg-slate-900/40 border border-slate-700 rounded-lg p-4">
-                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
                     <span>📊</span>
                     Difficulty Breakdown
                 </h4>
-                <div className="space-y-2">
+                <div className="space-y-3">
                     {Object.entries(insights.difficultyCount).map(([difficulty, count]) => (
                         <div key={difficulty} className="flex items-center justify-between">
-                            <span className="text-slate-400 text-sm">{difficulty}</span>
+                            <span className="text-gray-700 text-sm font-medium">{difficulty}</span>
                             <div className="flex items-center gap-2">
-                                <div className="w-24 h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
                                     <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: `${(count / insights.totalProblems) * 100}%` }}
@@ -155,7 +155,7 @@ export default function MentorView({ problems = [], userId }) {
                                         }`}
                                     />
                                 </div>
-                                <span className="text-sm font-mono text-slate-400 w-8 text-right">{count}</span>
+                                <span className="text-sm font-semibold text-gray-700 w-8 text-right">{count}</span>
                             </div>
                         </div>
                     ))}
@@ -167,25 +167,25 @@ export default function MentorView({ problems = [], userId }) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-gradient-to-r from-cyan-900/30 to-blue-900/30 border border-cyan-500/20 rounded-lg p-4"
+                className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4"
             >
-                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
                     <span>✅</span>
                     Next Steps
                 </h4>
-                <ul className="space-y-2 text-sm text-slate-300">
+                <ul className="space-y-2 text-sm text-gray-700">
                     <li className="flex items-start gap-2">
-                        <span className="text-cyan-400 mt-1">▶</span>
+                        <span className="text-blue-600 mt-1 font-bold">▶</span>
                         <span>Practice {insights.weakAreas[0] || 'Arrays'} problems - your weakest area</span>
                     </li>
                     <li className="flex items-start gap-2">
-                        <span className="text-cyan-400 mt-1">▶</span>
+                        <span className="text-blue-600 mt-1 font-bold">▶</span>
                         <span>Aim to solve at least 3 {
                             insights.difficultyCount.Hard > insights.difficultyCount.Easy ? 'Easy' : 'Hard'
                         } problems this week</span>
                     </li>
                     <li className="flex items-start gap-2">
-                        <span className="text-cyan-400 mt-1">▶</span>
+                        <span className="text-blue-600 mt-1 font-bold">▶</span>
                         <span>Review solutions and understand edge cases</span>
                     </li>
                 </ul>

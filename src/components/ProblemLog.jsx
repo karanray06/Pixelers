@@ -92,16 +92,16 @@ const ProblemLog = ({ userId, onProblemAdded }) => {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-r from-slate-800 to-slate-700 border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-500/40 transition-colors"
+                className="card-premium p-6"
             >
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <span className="text-cyan-400 font-mono">&gt;</span>
-                    Add Problem
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <span>📝</span>
+                    Log a Problem
                 </h3>
 
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-mono text-slate-300 mb-2">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
                             Problem URL
                         </label>
                         <input
@@ -110,10 +110,10 @@ const ProblemLog = ({ userId, onProblemAdded }) => {
                             onChange={(e) => setUrl(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleAnalyze()}
                             placeholder="https://leetcode.com/problems/two-sum/"
-                            className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors font-mono text-sm"
+                            className="input-premium w-full"
                         />
-                        <p className="text-xs text-slate-400 mt-2 font-mono">
-                            Supports: LeetCode, GeeksforGeeks, CodeChef, HackerRank
+                        <p className="text-xs text-gray-500 mt-2">
+                            Works with LeetCode, GeeksforGeeks, CodeChef, HackerRank
                         </p>
                     </div>
 
@@ -121,9 +121,9 @@ const ProblemLog = ({ userId, onProblemAdded }) => {
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm font-mono"
+                            className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-medium"
                         >
-                            ✗ {error}
+                            {error}
                         </motion.div>
                     )}
 
@@ -132,7 +132,7 @@ const ProblemLog = ({ userId, onProblemAdded }) => {
                         whileTap={{ scale: 0.98 }}
                         onClick={handleAnalyze}
                         disabled={loading}
-                        className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 disabled:opacity-50 text-white font-bold py-3 rounded-lg transition duration-300 flex items-center justify-center gap-2"
+                        className="w-full btn-primary flex items-center justify-center gap-2"
                     >
                         {loading ? (
                             <>
@@ -157,10 +157,10 @@ const ProblemLog = ({ userId, onProblemAdded }) => {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-gradient-to-br from-emerald-900/30 to-cyan-900/30 border border-emerald-500/30 rounded-xl p-6"
+                    className="card-premium p-6"
                 >
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <span className="text-emerald-400">✓</span>
+                    <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <span>✓</span>
                         Analysis Results
                     </h3>
 
@@ -169,10 +169,10 @@ const ProblemLog = ({ userId, onProblemAdded }) => {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="bg-slate-900/40 border border-emerald-500/20 rounded-lg p-4"
+                            className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl"
                         >
-                            <p className="text-xs font-mono text-slate-400 mb-1">TOPIC</p>
-                            <p className="text-xl font-bold text-emerald-400">{analysis.topic}</p>
+                            <p className="text-xs font-semibold text-blue-600 mb-2">TOPIC</p>
+                            <p className="text-xl font-bold text-blue-900">{analysis.topic}</p>
                         </motion.div>
 
                         {/* Difficulty */}
@@ -180,13 +180,25 @@ const ProblemLog = ({ userId, onProblemAdded }) => {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-slate-900/40 border border-yellow-500/20 rounded-lg p-4"
+                            className={`p-4 rounded-xl border ${
+                                analysis.difficulty === 'Easy' 
+                                    ? 'bg-gradient-to-br from-green-50 to-green-100 border-green-200' :
+                                analysis.difficulty === 'Medium' 
+                                    ? 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200' :
+                                    'bg-gradient-to-br from-red-50 to-red-100 border-red-200'
+                            }`}
                         >
-                            <p className="text-xs font-mono text-slate-400 mb-1">DIFFICULTY</p>
+                            <p className={`text-xs font-semibold mb-2 ${
+                                analysis.difficulty === 'Easy' ? 'text-green-600' :
+                                analysis.difficulty === 'Medium' ? 'text-yellow-600' :
+                                'text-red-600'
+                            }`}>
+                                DIFFICULTY
+                            </p>
                             <p className={`text-xl font-bold ${
-                                analysis.difficulty === 'Easy' ? 'text-green-400' :
-                                analysis.difficulty === 'Medium' ? 'text-yellow-400' :
-                                'text-red-400'
+                                analysis.difficulty === 'Easy' ? 'text-green-900' :
+                                analysis.difficulty === 'Medium' ? 'text-yellow-900' :
+                                'text-red-900'
                             }`}>
                                 {analysis.difficulty}
                             </p>
@@ -197,10 +209,10 @@ const ProblemLog = ({ userId, onProblemAdded }) => {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-slate-900/40 border border-blue-500/20 rounded-lg p-4"
+                            className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-xl"
                         >
-                            <p className="text-xs font-mono text-slate-400 mb-1">CONCEPT</p>
-                            <p className="text-sm font-bold text-blue-400">{analysis.concept}</p>
+                            <p className="text-xs font-semibold text-purple-600 mb-2">CONCEPT</p>
+                            <p className="text-sm font-bold text-purple-900">{analysis.concept}</p>
                         </motion.div>
                     </div>
 
@@ -210,7 +222,7 @@ const ProblemLog = ({ userId, onProblemAdded }) => {
                         whileTap={{ scale: 0.98 }}
                         onClick={handleSaveProblem}
                         disabled={loading}
-                        className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 disabled:opacity-50 text-white font-bold py-3 rounded-lg transition duration-300"
+                        className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 text-white font-bold py-3 rounded-lg transition duration-300"
                     >
                         {loading ? 'Saving...' : '💾 Save to Dashboard'}
                     </motion.button>
