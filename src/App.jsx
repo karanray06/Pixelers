@@ -4,11 +4,13 @@ import { AuthProvider } from './contexts/AuthContext';
 import Login from './components/Login';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import AIChat from './components/AIChat';
 
 function App() {
     return (
         <Router basename="/Pixelers">
             <AuthProvider>
+                <AIChat />
                 <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/dashboard" element={
