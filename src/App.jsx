@@ -7,7 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
     return (
-        <Router>
+        <Router basename="/Pixelers">
             <AuthProvider>
                 <Routes>
                     <Route path="/login" element={<Login />} />
@@ -16,7 +16,7 @@ function App() {
                             <Dashboard />
                         </ProtectedRoute>
                     } />
-                    <Route path="/" element={<Navigate to="/dashboard" />} />
+                    <Route path="/" element={<Navigate to="/login" />} />
                 </Routes>
             </AuthProvider>
         </Router>
