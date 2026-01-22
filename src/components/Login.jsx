@@ -13,11 +13,16 @@ export default function Login() {
         try {
             setIsLoading(true);
             setError('');
+            console.log("Starting Google Sign-In...");
             await loginWithGoogle();
+            console.log("Google Sign-In successful, navigating to dashboard");
             navigate('/dashboard');
         } catch (err) {
-            console.error(err);
-            setError('Failed to sign in. Please try again.');
+            const errorMsg = err.code === 'auth/popup-closed-by-user' 
+                ? 'Sign-in was cancelled. Please try again.' 
+                : err.message || 'Failed to sign in. Please check your internet connection.';
+            setError(errorMsg);
+            console.error("Sign-in error:", err.code, err.message);
         } finally {
             setIsLoading(false);
         }
@@ -25,13 +30,22 @@ export default function Login() {
 
     // Demo login for testing
     function handleDemoLogin() {
-        setIsLoading(true);
-        localStorage.setItem('demoUser', JSON.stringify({
-            uid: 'demo-user',
-            displayName: 'Demo User',
-            email: 'demo@pixelers.com'
-        }));
-        setTimeout(() => navigate('/dashboard'), 500);
+        try {
+            setIsLoading(true);
+            console.log("Starting demo login...");
+            localStorage.setItem('demoUser', JSON.stringify({
+                uid: 'demo-user',
+                displayName: 'Demo User',
+                email: 'demo@dsamentor.com'
+            }));
+            console.log("Demo login successful, navigating to dashboard");
+            setTimeout(() => navigate('/dashboard'), 300);
+        } catch (err) {
+            console.error("Demo login error:", err);
+            setError('Failed to start demo mode');
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     const containerVariants = {
