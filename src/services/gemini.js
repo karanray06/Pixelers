@@ -8,19 +8,20 @@ export async function analyzeProblem(url) {
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
         const prompt = `
-      Analyze this DSA problem URL: ${url}
-      Identify the following:
-      1. Topic (e.g., Arrays, DP, Graphs)
-      2. Difficulty (Easy, Medium, Hard)
-      3. Core Concept tested
-      
-      Return ONLY a JSON object:
-      {
-        "topic": "Topic Name",
-        "difficulty": "Difficulty",
-        "concept": "Concept Description"
-      }
-    `;
+You are a DSA expert. Analyze this DSA problem URL and extract key information.
+URL: ${url}
+
+Identify the following:
+1. Topic: The primary DSA topic (e.g., Arrays, Linked Lists, Trees, Graphs, Dynamic Programming, Hash Tables, Stacks, Queues, Heaps, Sorting, Binary Search, Strings, Backtracking, Greedy, Math, Bit Manipulation)
+2. Difficulty: Rate as Easy, Medium, or Hard
+3. Concept: A brief 1-2 sentence description of the core algorithmic concept tested
+
+Return ONLY a valid JSON object with no markdown, no code blocks, no extra text:
+{
+  "topic": "Topic Name",
+  "difficulty": "Easy|Medium|Hard",
+  "concept": "Brief concept description"
+}`;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
@@ -28,7 +29,18 @@ export async function analyzeProblem(url) {
 
         // Clean up markdown code blocks if present
         const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
-        return JSON.parse(cleanText);
+        
+        try {
+            return JSON.parse(cleanText);
+        } catch (parseErr) {
+            console.error("Parse error:", parseErr, "Text:", cleanText);
+            // Fallback response
+            return {
+                topic: "General DSA",
+                difficulty: "Medium",
+                concept: "Complex algorithm problem requiring analysis"
+            };
+        }
     } catch (error) {
         console.error("Gemini Analysis Error:", error);
         return {

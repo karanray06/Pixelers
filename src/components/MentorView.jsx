@@ -1,66 +1,195 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { analyzeProblem } from '../services/gemini';
 
-export default function MentorView({ problems = [] }) {
-    // Simple client-side aggregation for MVP
-    const topics = problems.reduce((acc, p) => {
-        acc[p.topic] = (acc[p.topic] || 0) + 1;
-        return acc;
-    }, {});
+export default function MentorView({ problems = [], userId }) {
+    const [insights, setInsights] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const weakAreas = Object.entries(topics)
-        .sort(([, a], [, b]) => a - b) // Sort by count (assuming low count = weak/unpracticed)
-        .slice(0, 3);
+    useEffect(() => {
+        if (problems.length > 0) {
+            generateInsights();
+        }
+    }, [problems]);
+
+    const generateInsights = async () => {
+        try {
+            setLoading(true);
+
+            // Calculate stats
+            const topicCount = problems.reduce((acc, p) => {
+                acc[p.topic] = (acc[p.topic] || 0) + 1;
+                return acc;
+            }, {});
+
+            const difficultyCount = problems.reduce((acc, p) => {
+                acc[p.difficulty] = (acc[p.difficulty] || 0) + 1;
+                return acc;
+            }, {});
+
+            const weakAreas = Object.entries(topicCount)
+                .sort((a, b) => a[1] - b[1])
+                .slice(0, 3)
+                .map(([topic]) => topic);
+
+            const strongAreas = Object.entries(topicCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3)
+                .map(([topic]) => topic);
+
+            // Generate recommendations
+            let recommendations = [];
+            if (weakAreas.length > 0) {
+                recommendations.push(`📌 Focus more on ${weakAreas.join(', ')} topics to strengthen weak areas`);
+            }
+
+            const totalProblems = problems.length;
+            if (totalProblems < 10) {
+                recommendations.push(`💪 Keep practicing! Aim for at least 10 problems to get better insights`);
+            }
+
+            if (difficultyCount.Hard && difficultyCount.Hard > difficultyCount.Easy) {
+                recommendations.push(`🎯 Great job tackling hard problems! Balance with medium difficulty to improve speed`);
+            } else if (difficultyCount.Easy && difficultyCount.Easy > difficultyCount.Hard) {
+                recommendations.push(`⬆️  Ready for a challenge? Try more Hard problems to push your limits`);
+            }
+
+            if (strongAreas.length > 0) {
+                recommendations.push(`⭐ You're strong in ${strongAreas.join(', ')} - maintain momentum!`);
+            }
+
+            setInsights({
+                topicCount,
+                difficultyCount,
+                weakAreas,
+                strongAreas,
+                recommendations: recommendations.slice(0, 4),
+                totalProblems
+            });
+        } catch (error) {
+            console.error('Error generating insights:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (!insights && problems.length > 0) {
+        return (
+            <div className="flex items-center justify-center py-8">
+                <div className="animate-pulse text-slate-400 flex items-center gap-2">
+                    <span className="text-2xl animate-spin">⚙️</span>
+                    Analyzing your progress...
+                </div>
+            </div>
+        );
+    }
+
+    if (problems.length === 0) {
+        return (
+            <div className="text-center py-8">
+                <div className="text-4xl mb-4">📚</div>
+                <p className="text-slate-400">No problems logged yet. Start by adding your first problem!</p>
+            </div>
+        );
+    }
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-panel p-6 mt-6"
-        >
-            <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-blue-500/20 rounded-lg text-blue-400">
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 className="text-xl font-semibold text-white">AI Mentor Insights</h3>
-                    <p className="text-gray-400 text-sm">Based on your recent activity</p>
-                </div>
+        <div className="space-y-6">
+            {/* Key Recommendations */}
+            <div className="space-y-3">
+                {insights.recommendations.map((rec, idx) => (
+                    <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        className="bg-slate-900/40 border border-blue-500/20 rounded-lg p-4 text-slate-300 text-sm font-mono"
+                    >
+                        {rec}
+                    </motion.div>
+                ))}
             </div>
 
-            <div className="space-y-4">
-                {problems.length === 0 ? (
-                    <div className="text-center py-6 text-gray-500">
-                        Log some problems to get insights!
-                    </div>
-                ) : (
-                    <>
-                        <div className="bg-surface/50 p-4 rounded-lg border border-white/5">
-                            <h4 className="text-sm font-medium text-gray-300 mb-2">Recommended Focus</h4>
-                            <div className="flex flex-wrap gap-2">
-                                {weakAreas.length > 0 ? weakAreas.map(([topic]) => (
-                                    <span key={topic} className="px-3 py-1 bg-red-500/20 text-red-200 text-xs rounded-full border border-red-500/20">
-                                        {topic}
-                                    </span>
-                                )) : (
-                                    <span className="text-gray-500 text-xs">Keep practicing to find gaps!</span>
-                                )}
+            {/* Stats Overview */}
+            <div className="grid grid-cols-2 gap-4">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="bg-slate-900/40 border border-slate-700 rounded-lg p-4"
+                >
+                    <p className="text-xs font-mono text-slate-500 mb-2">TOTAL PROBLEMS</p>
+                    <p className="text-2xl font-bold text-cyan-400">{insights.totalProblems}</p>
+                </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.1 }}
+                    className="bg-slate-900/40 border border-slate-700 rounded-lg p-4"
+                >
+                    <p className="text-xs font-mono text-slate-500 mb-2">TOPICS COVERED</p>
+                    <p className="text-2xl font-bold text-blue-400">{Object.keys(insights.topicCount).length}</p>
+                </motion.div>
+            </div>
+
+            {/* Detailed Breakdown */}
+            <div className="bg-slate-900/40 border border-slate-700 rounded-lg p-4">
+                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                    <span>📊</span>
+                    Difficulty Breakdown
+                </h4>
+                <div className="space-y-2">
+                    {Object.entries(insights.difficultyCount).map(([difficulty, count]) => (
+                        <div key={difficulty} className="flex items-center justify-between">
+                            <span className="text-slate-400 text-sm">{difficulty}</span>
+                            <div className="flex items-center gap-2">
+                                <div className="w-24 h-2 bg-slate-800 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${(count / insights.totalProblems) * 100}%` }}
+                                        transition={{ delay: 0.2, duration: 0.5 }}
+                                        className={`h-full ${
+                                            difficulty === 'Easy' ? 'bg-green-500' :
+                                            difficulty === 'Medium' ? 'bg-yellow-500' :
+                                            'bg-red-500'
+                                        }`}
+                                    />
+                                </div>
+                                <span className="text-sm font-mono text-slate-400 w-8 text-right">{count}</span>
                             </div>
                         </div>
-
-                        <div className="bg-surface/50 p-4 rounded-lg border border-white/5">
-                            <h4 className="text-sm font-medium text-gray-300 mb-2">Study Plan</h4>
-                            <p className="text-sm text-gray-400">
-                                Try solving 2 Medium problems on
-                                <span className="text-white font-medium"> {weakAreas[0]?.[0] || 'Arrays'} </span>
-                                today.
-                            </p>
-                        </div>
-                    </>
-                )}
+                    ))}
+                </div>
             </div>
-        </motion.div>
+
+            {/* Action Items */}
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-gradient-to-r from-cyan-900/30 to-blue-900/30 border border-cyan-500/20 rounded-lg p-4"
+            >
+                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                    <span>✅</span>
+                    Next Steps
+                </h4>
+                <ul className="space-y-2 text-sm text-slate-300">
+                    <li className="flex items-start gap-2">
+                        <span className="text-cyan-400 mt-1">▶</span>
+                        <span>Practice {insights.weakAreas[0] || 'Arrays'} problems - your weakest area</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                        <span className="text-cyan-400 mt-1">▶</span>
+                        <span>Aim to solve at least 3 {
+                            insights.difficultyCount.Hard > insights.difficultyCount.Easy ? 'Easy' : 'Hard'
+                        } problems this week</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                        <span className="text-cyan-400 mt-1">▶</span>
+                        <span>Review solutions and understand edge cases</span>
+                    </li>
+                </ul>
+            </motion.div>
+        </div>
     );
 }

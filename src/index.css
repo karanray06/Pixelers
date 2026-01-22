@@ -14,6 +14,7 @@ body {
   height: 100%;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
   color: white;
+  font-family: 'Fira Code', 'Monaco', 'Menlo', monospace;
 }
 
 #root {
@@ -30,9 +31,114 @@ body {
 
 @layer components {
   .glass-panel {
-    @apply bg-glass backdrop-blur-md border border-white/10 rounded-xl shadow-xl;
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-xl;
   }
+  
   .btn-primary {
-    @apply bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all shadow-lg shadow-blue-500/30 font-medium;
+    @apply bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-4 py-2 rounded-lg transition-all shadow-lg shadow-cyan-500/30 font-medium;
+  }
+
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(0deg, transparent 24%, rgba(100, 200, 255, 0.05) 25%, rgba(100, 200, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(100, 200, 255, 0.05) 75%, rgba(100, 200, 255, 0.05) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(100, 200, 255, 0.05) 25%, rgba(100, 200, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(100, 200, 255, 0.05) 75%, rgba(100, 200, 255, 0.05) 76%, transparent 77%, transparent);
+    background-size: 50px 50px;
   }
 }
+
+/* Animations */
+@keyframes blob {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Syntax highlighting vibes */
+.text-property {
+  @apply text-cyan-400;
+}
+
+.text-value {
+  @apply text-emerald-400;
+}
+
+.text-string {
+  @apply text-yellow-400;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #06b6d4, #3b82f6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #0891b2, #2563eb);
+}
+
+/* Code block styling */
+code {
+  @apply bg-slate-900/50 px-2 py-1 rounded text-cyan-300 font-mono text-sm;
+}
+
+pre {
+  @apply bg-slate-900/50 p-4 rounded-lg overflow-x-auto text-slate-300 font-mono text-sm;
+}
+
+/* Input styling */
+input[type="text"],
+input[type="url"],
+input[type="email"],
+input[type="password"],
+textarea {
+  @apply bg-slate-900/50 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors;
+}
+
+/* Focus states */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  @apply outline-none ring-2 ring-cyan-400/50 ring-offset-2 ring-offset-slate-900;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent;
