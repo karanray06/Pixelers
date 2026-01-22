@@ -78,7 +78,7 @@ export default function MentorView({ problems = [], userId }) {
             <div className="flex items-center justify-center py-8">
                 <div className="animate-pulse text-gray-400 flex items-center gap-2">
                     <span className="text-2xl animate-spin">⚙️</span>
-                    Analyzing your progress...
+                    <span className="text-gray-300">Analyzing your progress...</span>
                 </div>
             </div>
         );
@@ -88,7 +88,7 @@ export default function MentorView({ problems = [], userId }) {
         return (
             <div className="text-center py-8">
                 <div className="text-4xl mb-4">📚</div>
-                <p className="text-gray-500">No problems logged yet. Start by adding your first problem!</p>
+                <p className="text-gray-400">No problems logged yet. Start by adding your first problem!</p>
             </div>
         );
     }
@@ -103,7 +103,7 @@ export default function MentorView({ problems = [], userId }) {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.1 }}
-                        className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-gray-700 text-sm font-medium"
+                        className="card-premium p-4 border-l-4 border-cyan-500/60 text-gray-300 text-sm font-medium hover:border-cyan-400/80 transition-all"
                     >
                         {rec}
                     </motion.div>
@@ -115,47 +115,47 @@ export default function MentorView({ problems = [], userId }) {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4"
+                    className="card-premium p-4 border border-slate-700/60 border-l-4 border-l-blue-500/60"
                 >
-                    <p className="text-xs font-semibold text-blue-600 mb-2">TOTAL PROBLEMS</p>
-                    <p className="text-2xl font-bold text-blue-700">{insights.totalProblems}</p>
+                    <p className="text-xs font-semibold text-blue-400 mb-2">TOTAL PROBLEMS</p>
+                    <p className="text-3xl font-bold text-blue-300">{insights.totalProblems}</p>
                 </motion.div>
 
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4"
+                    className="card-premium p-4 border border-slate-700/60 border-l-4 border-l-purple-500/60"
                 >
-                    <p className="text-xs font-semibold text-purple-600 mb-2">TOPICS COVERED</p>
-                    <p className="text-2xl font-bold text-purple-700">{Object.keys(insights.topicCount).length}</p>
+                    <p className="text-xs font-semibold text-purple-400 mb-2">TOPICS COVERED</p>
+                    <p className="text-3xl font-bold text-purple-300">{Object.keys(insights.topicCount).length}</p>
                 </motion.div>
             </div>
 
             {/* Detailed Breakdown */}
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <div className="card-premium border border-slate-700/60 p-4">
+                <h4 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
                     <span>📊</span>
                     Difficulty Breakdown
                 </h4>
-                <div className="space-y-3">
+                <div className="space-y-4">
                     {Object.entries(insights.difficultyCount).map(([difficulty, count]) => (
                         <div key={difficulty} className="flex items-center justify-between">
-                            <span className="text-gray-700 text-sm font-medium">{difficulty}</span>
-                            <div className="flex items-center gap-2">
-                                <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <span className="text-gray-300 text-sm font-medium">{difficulty}</span>
+                            <div className="flex items-center gap-3 flex-1 ml-4">
+                                <div className="flex-1 h-2 bg-slate-700/50 rounded-full overflow-hidden border border-slate-600/30">
                                     <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: `${(count / insights.totalProblems) * 100}%` }}
                                         transition={{ delay: 0.2, duration: 0.5 }}
-                                        className={`h-full ${
-                                            difficulty === 'Easy' ? 'bg-green-500' :
-                                            difficulty === 'Medium' ? 'bg-yellow-500' :
-                                            'bg-red-500'
+                                        className={`h-full transition-colors ${
+                                            difficulty === 'Easy' ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
+                                            difficulty === 'Medium' ? 'bg-gradient-to-r from-yellow-500 to-orange-500' :
+                                            'bg-gradient-to-r from-red-500 to-pink-500'
                                         }`}
                                     />
                                 </div>
-                                <span className="text-sm font-semibold text-gray-700 w-8 text-right">{count}</span>
+                                <span className="text-sm font-bold text-gray-300 w-8 text-right">{count}</span>
                             </div>
                         </div>
                     ))}
@@ -167,26 +167,26 @@ export default function MentorView({ problems = [], userId }) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4"
+                className="card-premium border border-slate-700/60 p-4 bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-900/60"
             >
-                <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <h4 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
                     <span>✅</span>
                     Next Steps
                 </h4>
-                <ul className="space-y-2 text-sm text-gray-700">
-                    <li className="flex items-start gap-2">
-                        <span className="text-blue-600 mt-1 font-bold">▶</span>
-                        <span>Practice {insights.weakAreas[0] || 'Arrays'} problems - your weakest area</span>
+                <ul className="space-y-3 text-sm">
+                    <li className="flex items-start gap-3 p-2 rounded-lg bg-slate-700/20 hover:bg-slate-700/40 transition-colors">
+                        <span className="text-cyan-400 mt-0.5 font-bold">→</span>
+                        <span className="text-gray-300">Practice <span className="text-cyan-400 font-semibold">{insights.weakAreas[0] || 'Arrays'}</span> problems - your weakest area</span>
                     </li>
-                    <li className="flex items-start gap-2">
-                        <span className="text-blue-600 mt-1 font-bold">▶</span>
-                        <span>Aim to solve at least 3 {
+                    <li className="flex items-start gap-3 p-2 rounded-lg bg-slate-700/20 hover:bg-slate-700/40 transition-colors">
+                        <span className="text-cyan-400 mt-0.5 font-bold">→</span>
+                        <span className="text-gray-300">Aim to solve at least 3 <span className="text-cyan-400 font-semibold">{
                             insights.difficultyCount.Hard > insights.difficultyCount.Easy ? 'Easy' : 'Hard'
-                        } problems this week</span>
+                        }</span> problems this week</span>
                     </li>
-                    <li className="flex items-start gap-2">
-                        <span className="text-blue-600 mt-1 font-bold">▶</span>
-                        <span>Review solutions and understand edge cases</span>
+                    <li className="flex items-start gap-3 p-2 rounded-lg bg-slate-700/20 hover:bg-slate-700/40 transition-colors">
+                        <span className="text-cyan-400 mt-0.5 font-bold">→</span>
+                        <span className="text-gray-300">Review solutions and understand edge cases</span>
                     </li>
                 </ul>
             </motion.div>
