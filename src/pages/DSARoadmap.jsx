@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 export default function DSARoadmap() {
@@ -8,216 +8,118 @@ export default function DSARoadmap() {
     const roadmapData = [
         {
             id: 1,
-            title: 'Basics & Logic',
+            title: 'Foundations',
             difficulty: 'Easy',
+            icon: '01',
             completion: 100,
             problems: 25,
-            topics: ['Variables', 'Loops', 'Conditionals', 'Functions']
+            topics: ['Variables', 'Loops', 'Conditionals', 'Complexity'],
+            color: 'bg-emerald-500'
         },
         {
             id: 2,
-            title: 'Arrays & Strings',
+            title: 'Linear structures',
             difficulty: 'Easy-Medium',
+            icon: '02',
             completion: 75,
             problems: 45,
-            topics: ['Sliding Window', 'Two Pointers', 'Sorting', 'Hashing']
+            topics: ['Arrays', 'Strings', 'Linked Lists', 'Stacks'],
+            color: 'bg-cyan-500'
         },
         {
             id: 3,
-            title: 'Recursion & Backtracking',
+            title: 'Hierarchical logic',
             difficulty: 'Medium',
+            icon: '03',
             completion: 40,
-            problems: 35,
-            topics: ['Base Cases', 'Tree Recursion', 'Permutations', 'Combinations']
+            problems: 80,
+            topics: ['Trees', 'Heaps', 'Graphs', 'Tries'],
+            color: 'bg-indigo-500'
         },
         {
             id: 4,
-            title: 'Linked Lists',
-            difficulty: 'Medium',
-            completion: 30,
-            problems: 30,
-            topics: ['Traversal', 'Reversal', 'Cycles', 'Merge']
-        },
-        {
-            id: 5,
-            title: 'Stacks & Queues',
-            difficulty: 'Medium',
-            completion: 20,
-            problems: 25,
-            topics: ['Stack Operations', 'Queue Operations', 'Monotonic Stack', 'Deque']
-        },
-        {
-            id: 6,
-            title: 'Trees & BSTs',
-            difficulty: 'Medium-Hard',
-            completion: 15,
-            problems: 50,
-            topics: ['Traversals', 'BST', 'AVL Trees', 'Segment Trees']
-        },
-        {
-            id: 7,
-            title: 'Graphs',
+            title: 'Optimization',
             difficulty: 'Hard',
-            completion: 5,
-            problems: 55,
-            topics: ['DFS/BFS', 'Dijkstra', 'Topological Sort', 'Minimum Spanning Tree']
-        },
-        {
-            id: 8,
-            title: 'Dynamic Programming',
-            difficulty: 'Hard',
-            completion: 0,
-            problems: 60,
-            topics: ['Memoization', '0/1 Knapsack', 'LCS', 'Matrix Chain']
+            icon: '04',
+            completion: 10,
+            problems: 120,
+            topics: ['DP', 'Greedy', 'Backtracking', 'Flow'],
+            color: 'bg-rose-500'
         }
     ];
 
-    const getDifficultyColor = (difficulty) => {
-        if (difficulty === 'Easy') return 'from-green-600 to-emerald-600';
-        if (difficulty === 'Easy-Medium') return 'from-blue-600 to-cyan-600';
-        if (difficulty === 'Medium') return 'from-yellow-600 to-orange-600';
-        if (difficulty === 'Medium-Hard') return 'from-orange-600 to-red-600';
-        return 'from-red-600 to-pink-600';
-    };
-
-    const getDifficultyLabel = (difficulty) => {
-        if (difficulty === 'Easy') return 'badge-success';
-        if (difficulty === 'Medium') return 'badge-warning';
-        return 'badge-danger';
-    };
-
     return (
-        <div className="pt-24 pb-16 px-6">
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: -30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-16"
-                >
-                    <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                        <span className="gradient-text">DSA Learning Roadmap</span>
-                    </h1>
-                    <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                        A structured path from fundamentals to mastery. Master each topic progressively with AI guidance.
-                    </p>
-                </motion.div>
+        <div className="pt-28 pb-20 bg-[#f7f7f7] min-h-screen">
+            <div className="max-w-[1000px] mx-auto px-6">
+                <header className="mb-16">
+                    <h1 className="text-4xl font-black text-slate-800 tracking-tight">DSA Learning Path</h1>
+                    <p className="text-sm font-bold text-slate-500 mt-2 uppercase tracking-widest">A structured sequence to technical mastery.</p>
+                </header>
 
-                {/* Roadmap Grid */}
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-6">
                     {roadmapData.map((topic, idx) => (
-                        <motion.div
-                            key={topic.id}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: idx * 0.1 }}
-                            className="glass-panel p-6 cursor-pointer hover:border-blue-500/50 transition-all"
-                            onClick={() => setExpandedTopic(expandedTopic === topic.id ? null : topic.id)}
-                        >
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-bold mb-2">{topic.title}</h3>
-                                    <div className={`badge-${getDifficultyLabel(topic.difficulty)} inline-block mb-4`}>
-                                        {topic.difficulty}
+                        <div key={topic.id} className="relative group">
+                            {/* Connector Line */}
+                            {idx !== roadmapData.length - 1 && (
+                                <div className="absolute left-10 top-20 w-0.5 h-full bg-gray-200 -z-10" />
+                            )}
+
+                            <div
+                                onClick={() => setExpandedTopic(expandedTopic === topic.id ? null : topic.id)}
+                                className={`edu-panel p-8 cursor-pointer transition-all duration-300 hover:border-[#2f8d46]/30 flex flex-col md:flex-row items-center gap-10 ${expandedTopic === topic.id ? 'border-[#2f8d46]/40 shadow-md' : ''}`}
+                            >
+                                <div className="w-16 h-16 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-xl shrink-0">
+                                    {topic.icon}
+                                </div>
+
+                                <div className="flex-1 text-center md:text-left">
+                                    <h3 className="text-2xl font-black text-[#333333] group-hover:text-[#2f8d46] transition-colors uppercase tracking-tight">{topic.title}</h3>
+                                    <div className="flex gap-4 justify-center md:justify-start items-center text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">
+                                        <span className="text-[#2f8d46]">{topic.difficulty}</span>
+                                        <span>•</span>
+                                        <span>{topic.problems} Units</span>
                                     </div>
                                 </div>
-                                <span className="text-3xl">{topic.id === 1 ? '✅' : topic.completion > 0 ? '⏳' : '🔒'}</span>
-                            </div>
 
-                            {/* Progress Bar */}
-                            <div className="mb-4">
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-sm text-gray-400">Progress</span>
-                                    <span className="text-sm font-semibold text-blue-400">{topic.completion}%</span>
-                                </div>
-                                <div className="w-full h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                                <div className="w-48 h-2 bg-gray-100 rounded-full overflow-hidden shrink-0">
                                     <motion.div
                                         initial={{ width: 0 }}
                                         whileInView={{ width: `${topic.completion}%` }}
-                                        viewport={{ once: true }}
-                                        transition={{ delay: 0.2, duration: 0.8 }}
-                                        className={`h-full bg-gradient-to-r ${getDifficultyColor(topic.difficulty)}`}
+                                        className="h-full bg-[#2f8d46]"
                                     />
                                 </div>
+                                <span className="text-sm font-black text-slate-800 shrink-0">{topic.completion}%</span>
                             </div>
 
-                            {/* Stats */}
-                            <div className="flex gap-4 mb-4 text-sm text-gray-400">
-                                <span>📊 {topic.problems} problems</span>
-                                <span>⏱️ ~{Math.ceil(topic.problems / 5)} hours</span>
-                            </div>
-
-                            {/* Action Buttons */}
-                            <div className="flex gap-2">
-                                {topic.completion === 100 && (
-                                    <button className="flex-1 px-4 py-2 bg-green-600/20 text-green-300 rounded-lg font-semibold">
-                                        ✅ Completed
-                                    </button>
+                            <AnimatePresence>
+                                {expandedTopic === topic.id && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="overflow-hidden bg-white mt-1 edu-panel border-t-0 rounded-t-none"
+                                    >
+                                        <div className="p-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+                                            {topic.topics.map((t, i) => (
+                                                <div key={i} className="bg-[#f7f7f7] p-4 rounded-lg">
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Subject {i + 1}</p>
+                                                    <p className="text-sm font-bold text-slate-800">{t}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="px-8 pb-8 flex justify-end">
+                                            <Link to="/practice">
+                                                <button className="btn-edu-primary h-12 px-8 text-xs uppercase tracking-widest">
+                                                    Start Learning
+                                                </button>
+                                            </Link>
+                                        </div>
+                                    </motion.div>
                                 )}
-                                {topic.completion > 0 && topic.completion < 100 && (
-                                    <Link to="/practice" className="flex-1">
-                                        <button className="w-full px-4 py-2 bg-blue-600/20 text-blue-300 rounded-lg font-semibold">
-                                            📚 Resume
-                                        </button>
-                                    </Link>
-                                )}
-                                {topic.completion === 0 && topic.id <= 2 && (
-                                    <Link to="/practice" className="flex-1">
-                                        <button className="w-full px-4 py-2 bg-slate-700/30 text-gray-300 rounded-lg font-semibold">
-                                            🚀 Start
-                                        </button>
-                                    </Link>
-                                )}
-                                {topic.completion === 0 && topic.id > 2 && (
-                                    <button className="flex-1 px-4 py-2 bg-slate-700/30 text-gray-400 rounded-lg font-semibold cursor-not-allowed">
-                                        🔒 Locked
-                                    </button>
-                                )}
-                            </div>
-
-                            {/* Expandable Topics */}
-                            {expandedTopic === topic.id && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    className="mt-4 pt-4 border-t border-slate-700/30"
-                                >
-                                    <p className="text-sm text-gray-400 mb-3">Topics in this section:</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {topic.topics.map((t, idx) => (
-                                            <span
-                                                key={idx}
-                                                className="px-3 py-1 bg-slate-700/30 text-gray-300 text-xs rounded-full"
-                                            >
-                                                {t}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </motion.div>
-                            )}
-                        </motion.div>
+                            </AnimatePresence>
+                        </div>
                     ))}
                 </div>
-
-                {/* Info Box */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="glass-panel p-8 mt-12 border-blue-500/30"
-                >
-                    <div className="flex gap-4">
-                        <span className="text-4xl">💡</span>
-                        <div>
-                            <h4 className="text-lg font-bold mb-2">Pro Tip</h4>
-                            <p className="text-gray-300">
-                                Don't just memorize solutions. Practice each problem, understand the approach, and learn to optimize. 
-                                Use our AI Mentor to get hints when stuck. Remember: the goal is to understand, not to rush through problems.
-                            </p>
-                        </div>
-                    </div>
-                </motion.div>
             </div>
         </div>
     );

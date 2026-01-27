@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import StatsCard from '../components/StatsCard';
 import { Trophy, Target, Zap, Clock, TrendingUp, AlertCircle } from 'lucide-react';
-import { Bar, Pie } from 'react-chartjs-2'; // Would need chart.js, but I'll use simple CSS bars for now to avoid dependency hell if not needed.
+// import { Bar, Pie } from 'react-chartjs-2'; // Removing unused import to fix error
 // Actually, simple CSS bars are safer.
 
 const Dashboard = () => {

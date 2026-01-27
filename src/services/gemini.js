@@ -12,12 +12,12 @@ const genAI = new GoogleGenerativeAI(API_KEY || "default-key");
 function extractProblemInfo(url) {
     const urlLower = url.toLowerCase();
     let platform = "Unknown";
-    
+
     if (urlLower.includes('leetcode')) platform = "LeetCode";
     else if (urlLower.includes('geeksforgeeks')) platform = "GeeksforGeeks";
     else if (urlLower.includes('codechef')) platform = "CodeChef";
     else if (urlLower.includes('hackerrank')) platform = "HackerRank";
-    
+
     return { platform };
 }
 
@@ -35,7 +35,7 @@ export async function analyzeProblem(url) {
         }
 
         console.log("🔍 Analyzing problem...", url);
-        
+
         if (!API_KEY) {
             console.warn("⚠️ Using fallback analysis - API key not configured");
             return getFallbackAnalysis(url);
@@ -66,10 +66,10 @@ Return ONLY valid JSON (no markdown, no code blocks):
             .replace(/```/g, '')
             .replace(/json/g, '')
             .trim();
-        
+
         try {
             const parsed = JSON.parse(cleanText);
-            
+
             // Validate response
             if (parsed.topic && parsed.difficulty && parsed.concept) {
                 console.log("✅ Analysis successful:", parsed);
@@ -90,12 +90,41 @@ Return ONLY valid JSON (no markdown, no code blocks):
 
 function getFallbackAnalysis(url) {
     const { platform } = extractProblemInfo(url);
-    
+
     console.log("📋 Using fallback analysis for", platform);
-    
+
     return {
         topic: "Arrays",
         difficulty: "Medium",
         concept: platform + " problem requiring algorithmic analysis and optimization"
     };
 }
+
+export async function generateChatResponse(history, userInput) {
+    try {
+        if (!API_KEY) {
+            return "I'm Pixeler, your AI mentor! (Note: API key not configured, using simulated response). How can I help you with DSA today?";
+        }
+
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        // Format history for Gemini
+        const chat = model.startChat({
+            history: history.map(msg => ({
+                role: msg.sender === 'user' ? 'user' : 'model',
+                parts: [{ text: msg.text }]
+            })),
+            generationConfig: {
+                maxOutputTokens: 1000,
+            },
+        });
+
+        const result = await chat.sendMessage(userInput);
+        const response = await result.response;
+        return response.text();
+    } catch (error) {
+        console.error("❌ Chat Generation Error:", error);
+        throw error;
+    }
+}
+
